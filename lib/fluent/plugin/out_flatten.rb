@@ -25,7 +25,7 @@ class Fluent::FlattenOutput < Fluent::Output
     input.each do |key, value|
       key = options[:prefix].nil? ? "#{key}" : "#{options[:prefix]}#{delimiter}#{key}"
       if value.is_a? Hash
-        make_hash_one_dimensional(value, output, :prefix => key, :delimiter => delimiter)
+        flatten(value, output, :prefix => key, :delimiter => delimiter)
       else
         output[key]  = value
       end
