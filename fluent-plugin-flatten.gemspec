@@ -7,9 +7,9 @@ Gem::Specification.new do |gem|
   gem.version       = "0.0.1"
   gem.authors       = ["aki"]
   gem.email         = ["lala.akira@gmail.com"]
-  gem.description   = %q{Output filter plugin Flatten a nested json}
-  gem.summary       = %q{Output filter plugin Flatten a nested json}
-  gem.homepage      = "https://github.com/aki77/fluent-plugin-datacounter"
+  gem.description   = %q{Output filter plugin flatten a nested json}
+  gem.summary       = %q{Output filter plugin flatten a nested json}
+  gem.homepage      = "https://github.com/aki77/fluent-plugin-flatten"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
