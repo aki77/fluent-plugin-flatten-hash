@@ -1,9 +1,9 @@
-# Fluent::Plugin::Flatten
+# Fluent::Plugin::Flatten::Hash
 
 ## Configuration
 
     <match nested.log>
-      type flatten
+      type flatten_hash
       add_prefix flatten
     </match>
 

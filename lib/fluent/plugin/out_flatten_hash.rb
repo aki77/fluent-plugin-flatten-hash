@@ -1,5 +1,5 @@
-class Fluent::FlattenOutput < Fluent::Output
-  Fluent::Plugin.register_output('flatten', self)
+class Fluent::FlattenHashOutput < Fluent::Output
+  Fluent::Plugin.register_output('flatten_hash', self)
 
   config_param :tag,        :string, :default => 'flatten'
   config_param :add_prefix, :string, :default => nil
