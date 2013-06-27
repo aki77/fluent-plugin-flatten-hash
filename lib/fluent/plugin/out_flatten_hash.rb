@@ -3,7 +3,7 @@ class Fluent::FlattenHashOutput < Fluent::Output
 
   config_param :tag,        :string, :default => 'flatten'
   config_param :add_prefix, :string, :default => nil
-  config_param :delimiter,  :string, :default => '_'
+  config_param :delimiter,  :string, :default => '.'
 
   def emit(tag, es, chain)
     if @add_prefix
@@ -21,7 +21,7 @@ class Fluent::FlattenHashOutput < Fluent::Output
   end
 
   def flatten(input = {}, output = {}, options = {})
-    delimiter = options[:delimiter] || "_"
+    delimiter = options[:delimiter] || "."
     input.each do |key, value|
       key = options[:prefix].nil? ? "#{key}" : "#{options[:prefix]}#{delimiter}#{key}"
       if value.is_a? Hash
