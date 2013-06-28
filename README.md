@@ -1,16 +1,27 @@
 # Fluent::Plugin::Flatten::Hash
 
-## Configuration
+## Synopsis
 
-    <match nested.log>
-      type flatten_hash
-      add_prefix flatten
-    </match>
+Imagin you have a config as below:
 
-    <match flatten.nested.log>
-      type tdlog
-      apikey YOUR_API_KEY
-      auto_create_table
-      buffer_type file
-      buffer_path /var/log/td-agent/buffer/td
-    </match>
+```
+<match nested.**>
+  type           flatten_hash
+  add_tag_prefix flattend.
+</match>
+```
+
+And you feed such a value into fluentd:
+
+```
+"nested" => {
+  "foo"  => {"bar" => {"qux" => "quux", "hoe" => "poe" }, "baz" => "bazz" },
+  "hoge" => "fuga"
+}
+```
+
+Then you'll get re-emmited tag/record-s below:
+
+```
+"flattend.nested" => { "foo.bar.qux" => "quux", "foo.bar.hoe" => "poe", "foo.baz" => "bazz", "hoge" => "fuga" }
+```

@@ -1,35 +1,46 @@
-class Fluent::FlattenHashOutput < Fluent::Output
-  Fluent::Plugin.register_output('flatten_hash', self)
+module Fluent
+  class FlattenHashOutput < Fluent::Output
+    Fluent::Plugin.register_output('flatten_hash', self)
 
-  config_param :tag,        :string, :default => 'flatten'
-  config_param :add_prefix, :string, :default => nil
-  config_param :delimiter,  :string, :default => '.'
+    config_param :delimiter,  :string, :default => '.'
 
-  def emit(tag, es, chain)
-    if @add_prefix
-      tag = @add_prefix + '.' + tag
-    else
-      tag = @tag
-    end
+    include HandleTagNameMixin
 
-    es.each do |time, record|
-      record = flatten(record, {}, :delimiter => @delimiter)
-      Fluent::Engine.emit(tag, time, record)
-    end
+    def configure(conf)
+      super
 
-    chain.next
-  end
-
-  def flatten(input = {}, output = {}, options = {})
-    delimiter = options[:delimiter] || "."
-    input.each do |key, value|
-      key = options[:prefix].nil? ? "#{key}" : "#{options[:prefix]}#{delimiter}#{key}"
-      if value.is_a? Hash
-        flatten(value, output, :prefix => key, :delimiter => delimiter)
-      else
-        output[key]  = value
+      if (
+          !@remove_tag_prefix &&
+          !@remove_tag_suffix &&
+          !@add_tag_prefix    &&
+          !@add_tag_suffix
+      )
+        raise Fluent::ConfigError, "At least one of remove_tag_prefix/remove_tag_suffix/add_tag_prefix/add_tag_suffix is required to be set"
       end
     end
-    output
+
+    def emit(tag, es, chain)
+      es.each do |time, record|
+        new_tag = tag.clone
+        new_record = flatten(record)
+
+        filter_record(new_tag, time, new_record)
+        Fluent::Engine.emit(new_tag, time, new_record)
+      end
+
+      chain.next
+    end
+
+    def flatten(input = {}, output = {}, prefix = nil)
+      input.each do |key, value|
+        key = "#{prefix}#{@delimiter}#{key}" unless prefix.nil?
+        if value.is_a? Hash
+          flatten(value, output, key)
+        else
+          output[key]  = value
+        end
+      end
+      output
+    end
   end
 end

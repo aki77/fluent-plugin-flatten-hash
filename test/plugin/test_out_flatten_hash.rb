@@ -6,7 +6,7 @@ class FlattenHashOutputTest < Test::Unit::TestCase
   end
 
   DEFAULT_CONFIG = %[
-    add_prefix        flattened
+    add_tag_prefix  flattened.
   ]
 
   def create_driver(conf = DEFAULT_CONFIG, tag = 'test')
@@ -16,7 +16,7 @@ class FlattenHashOutputTest < Test::Unit::TestCase
   def test_configure
     d1 = create_driver
 
-    assert_equal 'flattened', d1.instance.add_prefix
+    assert_equal 'flattened.', d1.instance.add_tag_prefix
   end
 
   def test_flatten
@@ -24,9 +24,6 @@ class FlattenHashOutputTest < Test::Unit::TestCase
 
     flattened = d.instance.flatten({ 'foo' => { 'bar' => 'baz' }, 'hoge' => 'fuga' })
     assert_equal({ 'foo.bar' => 'baz', 'hoge' => 'fuga'  }, flattened)
-
-    flattened = d.instance.flatten({ 'foo' => { 'bar' => 'baz' }, 'hoge' => 'fuga' }, {}, :delimiter => '_')
-    assert_equal({ 'foo_bar' => 'baz', 'hoge' => 'fuga'  }, flattened)
   end
 
   def test_emit
